@@ -4,14 +4,11 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-    container_name: backend
     environment:
       - DB_PASSWORD=${DB_PASSWORD}
       - SECRET_KEY=${SECRET_KEY}
       - UPLOAD_DIR=/data
     image: ghcr.io/hearthweb/backend:latest
-    networks:
-      - hearthweb
     restart: unless-stopped
     volumes:
       - ${DATA_DIR:-./data}/backend:/data
@@ -20,10 +17,7 @@ services:
     depends_on:
       backend:
         condition: service_healthy
-    container_name: frontend
     image: ghcr.io/hearthweb/frontend:latest
-    networks:
-      - hearthweb
     ports:
       - "80:8000"
     restart: unless-stopped
@@ -31,18 +25,15 @@ services:
       - ${DATA_DIR:-./data}/frontend:/data
 
   postgres:
-    container_name: postgres
     environment:
       - DB_PASSWORD=${DB_PASSWORD}
     healthcheck:
       test: pg_isready
     image: postgres:18.4-alpine
-    networks:
-      - hearthweb
     restart: unless-stopped
     volumes:
       - ${DATA_DIR:-./data}/postgres:/var/lib/postgresql/data
       
 networks:
-  hearthweb:
-    driver: bridge
+  default:
+    name: hearthweb
