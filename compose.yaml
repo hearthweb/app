@@ -26,13 +26,13 @@ services:
 
   postgres:
     environment:
-      - DB_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
     healthcheck:
       test: pg_isready
     image: postgres:18.4-alpine
     restart: unless-stopped
     volumes:
-      - ${DATA_DIR:-./data}/postgres:/var/lib/postgresql/data
+      - ${DATA_DIR:-./data}/postgres:/var/lib/postgresql
       
 networks:
   default:
